@@ -9,7 +9,6 @@
     'button[aria-label^="Kontrollmenü für den Beitrag"], button[aria-label^="Control menu for post"]';
   const TEXT_BOX = '[data-testid="expandable-text-box"]';
   const COMMENTS = '[componentkey*="commentsSectionContainer"]';
-  const ACTION = 'button[aria-label^="Kommentieren"], button[aria-label^="Comment"]';
   const MARK = 'data-schnell-lesen';
 
   /** Alle Beiträge auf der Seite (Feed, Profil, Einzelansicht). */
@@ -65,32 +64,29 @@
     b.setAttribute(MARK, '');
     b.title = 'Diesen Beitrag schnell lesen';
     b.setAttribute('aria-label', 'Diesen Beitrag schnell lesen');
-    b.innerHTML = BOLT + '<span>Lesen</span>';
+    b.innerHTML = BOLT + '<span>Schnell lesen</span>';
     b.style.cssText = [
       'display:inline-flex',
       'align-items:center',
-      'gap:4px',
-      'height:32px',
-      'padding:0 10px',
-      'margin:4px',
-      'border:0',
-      'border-radius:4px',
+      'gap:6px',
+      'height:30px',
+      'padding:0 14px 0 10px',
+      'margin:8px 0 2px',
+      'border:1.5px solid #d6261c',
+      'border-radius:15px',
       'background:transparent',
       'color:inherit',
       'font:inherit',
       'font-size:14px',
       'font-weight:600',
-      'opacity:0.75',
+      'line-height:1',
       'cursor:pointer',
-      'flex:none',
     ].join(';');
     b.addEventListener('mouseenter', () => {
-      b.style.background = 'rgba(127,127,127,0.15)';
-      b.style.opacity = '1';
+      b.style.background = 'rgba(214,38,28,0.12)';
     });
     b.addEventListener('mouseleave', () => {
       b.style.background = 'transparent';
-      b.style.opacity = '0.75';
     });
     b.addEventListener('click', (ev) => {
       // Nicht an LinkedIn weiterreichen, sonst öffnet sich ggf. die Einzelansicht
@@ -102,28 +98,19 @@
     return b;
   }
 
-  /** Leiste mit Gefällt mir · Kommentieren · Reposten · Senden: erster Vorfahr mit ≥ 3 Kindern. */
-  function actionBar(action, post) {
-    let el = action.parentElement;
-    while (el && el !== post) {
-      if (el.children.length >= 3) return el;
-      el = el.parentElement;
-    }
-    return null;
-  }
-
+  /**
+   * Knopf als eigene Zeile direkt unter den Beitragstext. Die Textbox selbst
+   * schneidet per overflow ab, deshalb kommt er als Geschwister dahinter.
+   */
   function decorate(post) {
     if (post.querySelector('[' + MARK + ']')) return;
     const boxes = textBoxes(post);
     if (!boxes.length) return; // nur Bild oder Video
-    const action = [...post.querySelectorAll(ACTION)].find((a) => !a.closest(COMMENTS));
-    const btn = makeButton(post);
-    const bar = action && actionBar(action, post);
-    if (bar) {
-      bar.append(btn);
-    } else {
-      boxes[boxes.length - 1].after(btn);
-    }
+    const row = document.createElement('span');
+    row.setAttribute(MARK, 'row');
+    row.style.cssText = 'display:block';
+    row.append(makeButton(post));
+    boxes[boxes.length - 1].after(row);
   }
 
   let queued = false;

@@ -27,7 +27,7 @@ Wenn du Dateien in `core/` geändert hast, führe `sh build.sh` aus und klicke i
 
 - **Auswahl lesen:** Text markieren, dann Rechtsklick und **Schnell lesen**.
 - **Seite lesen:** Ohne Auswahl auf das Symbol klicken oder Alt+Shift+R drücken. Gelesen wird der Hauptartikel der Seite.
-- **LinkedIn:** Jeder Beitrag mit Text hat in der Leiste unter dem Beitrag einen Knopf **⚡ Lesen**, neben „Senden“. Ein Klick liest genau diesen Beitrag, auch wenn er mit „… mehr“ gekürzt ist. Das Symbol ohne Auswahl liest den Beitrag in Bildschirmmitte.
+- **LinkedIn:** Jeder Beitrag mit Text hat direkt unter dem Text einen rot umrandeten Knopf **⚡ Schnell lesen**. Ein Klick liest genau diesen Beitrag, auch wenn er mit „… mehr“ gekürzt ist. Das Symbol ohne Auswahl liest den Beitrag in Bildschirmmitte.
 
 Das Tastenkürzel änderst du unter `chrome://extensions/shortcuts`.
 
