@@ -15,10 +15,11 @@ Es gibt zwei Wege:
 
 ## Erweiterung installieren (einmalig)
 
-1. Öffne `chrome://extensions` in Chrome, Edge, Brave oder Arc.
-2. Schalte oben rechts den **Entwicklermodus** ein.
-3. Klicke **Entpackte Erweiterung laden** und wähle den Ordner `extension/`.
-4. Hefte das Symbol über das Puzzleteil an die Symbolleiste.
+1. Gib in Chrome in die Adresszeile `chrome://extensions` ein und drück ↩.
+2. Schalte oben rechts den Schalter **Entwicklermodus** ein. Danach erscheint links oben eine Knopfleiste.
+3. Klicke **Entpackte Erweiterung laden**. Wähle im Dialog den Ordner `Schnells Lesen/extension` und klicke **Auswählen**. Alternativ ziehst du den Ordner `extension` aus dem Finder in das Chrome-Fenster.
+4. Die Karte „Schnell lesen 1.1.0“ erscheint. Klicke oben rechts in Chrome auf das Puzzleteil und dann auf die Stecknadel neben „Schnell lesen“. Damit liegt das Symbol dauerhaft in der Leiste.
+5. Lade offene LinkedIn-Tabs einmal neu (⌘R).
 
 Wenn du Dateien in `core/` geändert hast, führe `sh build.sh` aus und klicke in `chrome://extensions` bei der Erweiterung auf ↻.
 
@@ -26,7 +27,7 @@ Wenn du Dateien in `core/` geändert hast, führe `sh build.sh` aus und klicke i
 
 - **Auswahl lesen:** Text markieren, dann Rechtsklick und **Schnell lesen**.
 - **Seite lesen:** Ohne Auswahl auf das Symbol klicken oder Alt+Shift+R drücken. Gelesen wird der Hauptartikel der Seite.
-- **LinkedIn-Feed:** Ohne Auswahl wird der Beitrag in Bildschirmmitte gelesen. „…mehr“ wird vorher aufgeklappt.
+- **LinkedIn:** Jeder Beitrag mit Text hat in der Leiste unter dem Beitrag einen Knopf **⚡ Lesen**, neben „Senden“. Ein Klick liest genau diesen Beitrag, auch wenn er mit „… mehr“ gekürzt ist. Das Symbol ohne Auswahl liest den Beitrag in Bildschirmmitte.
 
 Das Tastenkürzel änderst du unter `chrome://extensions/shortcuts`.
 
@@ -72,5 +73,6 @@ build.sh         verteilt core/ an app/ und extension/
 
 ## Bekannte Grenzen
 
-- LinkedIn ändert seine Seitenstruktur regelmäßig. Findet die Erweiterung den Beitrag nicht, markiere den Text und lies über das Kontextmenü.
+- LinkedIn ändert seine Seitenstruktur regelmäßig. Die Knöpfe hängen an den Anker-Attributen in `extension/linkedin.js` (Stand Oktober 2026). Fehlen die Knöpfe plötzlich, markiere den Text und lies über das Kontextmenü. Die Anker müssen dann angepasst werden. Die Testseite dafür ist `tools/testseite-linkedin.html`.
+- Die Erweiterung läuft auf `linkedin.com` dauerhaft mit, damit die Knöpfe erscheinen. Auf allen anderen Seiten läuft sie erst nach deinem Klick.
 - Safari wird nicht unterstützt. Dafür bräuchte es einen Xcode-Wrapper.

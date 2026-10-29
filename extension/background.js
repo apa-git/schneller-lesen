@@ -20,6 +20,14 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 // Symbolklick und Tastenkürzel (_execute_action) landen hier
 chrome.action.onClicked.addListener((tab) => openReader(tab, ''));
 
+// content.js fragt das Leser-CSS ab, wenn es per Manifest geladen wurde (LinkedIn-Knopf)
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg && msg.type === 'css') {
+    readerCss().then(sendResponse, () => sendResponse(''));
+    return true; // Antwort kommt asynchron
+  }
+});
+
 async function readerCss() {
   if (!cssCache) cssCache = await (await fetch(chrome.runtime.getURL('rsvp.css'))).text();
   return cssCache;

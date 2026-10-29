@@ -64,35 +64,10 @@
     return null;
   }
 
-  function linkedInText() {
-    const posts = [
-      ...document.querySelectorAll(
-        '.feed-shared-update-v2, [data-urn^="urn:li:activity"], [data-id^="urn:li:activity"], .scaffold-layout__detail article'
-      ),
-    ].filter(visible);
-    if (!posts.length) return '';
-    // Beitrag, der der Bildschirmmitte am nächsten ist
-    const mid = innerHeight / 2;
-    const dist = (el) => {
-      const r = el.getBoundingClientRect();
-      return r.top <= mid && r.bottom >= mid ? 0 : Math.min(Math.abs(r.top - mid), Math.abs(r.bottom - mid));
-    };
-    posts.sort((a, b) => dist(a) - dist(b));
-    const post = posts[0];
-    // „…mehr“ aufklappen, damit der ganze Beitrag gelesen wird
-    const more = post.querySelector(
-      '.feed-shared-inline-show-more-text__see-more-less-toggle, button[aria-label*="mehr" i], button[aria-label*="more" i]'
-    );
-    if (more && /mehr|more/i.test(more.innerText || more.getAttribute('aria-label') || '')) more.click();
-    const body = post.querySelector(
-      '.update-components-text, .feed-shared-inline-show-more-text, .feed-shared-text, [data-test-id="main-feed-activity-card__commentary"]'
-    );
-    return clean((body || post).innerText || '').replace(/\s*…\s*(mehr|more)\s*$/i, '');
-  }
-
   function mainText() {
-    if (/(^|\.)linkedin\.com$/.test(location.hostname) && !/\/pulse\//.test(location.pathname)) {
-      const t = linkedInText();
+    // Auf LinkedIn: Beitrag in Bildschirmmitte (linkedin.js, per Manifest geladen)
+    if (window.__schnellLesenLinkedIn && !/\/pulse\//.test(location.pathname)) {
+      const t = window.__schnellLesenLinkedIn.centerPostText();
       if (t) return t;
     }
     const candidates = [...document.querySelectorAll('article, [role="main"], main')].filter(visible);
@@ -154,10 +129,28 @@
     document.documentElement.style.overflow = savedOverflow;
   }
 
+  let cssCache = null;
+
+  /** Leser-CSS: vom Aufrufer mitgegeben oder beim Hintergrund-Skript abgefragt. */
+  function readerCss(css) {
+    if (css) cssCache = css;
+    if (cssCache) return Promise.resolve(cssCache);
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage({ type: 'css' }, (res) => {
+        cssCache = typeof res === 'string' ? res : '';
+        resolve(cssCache);
+      });
+    });
+  }
+
+  /** Text bestimmen: Auswahl, dann mitgegebener Text, dann Hauptinhalt der Seite. */
   function open(fallback, css) {
     const selection = (window.getSelection() || '').toString().trim();
-    const text = selection || (fallback || '').trim() || mainText();
+    show(selection || (fallback || '').trim() || mainText(), css);
+  }
 
+  function show(text, css) {
+    if (host) close();
     host = document.createElement('div');
     host.id = 'schnell-lesen-host';
     host.style.cssText = 'position:fixed;inset:0;z-index:2147483647;';
@@ -188,9 +181,14 @@
   }
 
   window.__schnellLesen = {
+    // Symbol, Kontextmenü, Tastenkürzel: öffnet oder schließt
     toggle(fallback, css) {
       if (host) close();
-      else open(fallback, css);
+      else readerCss(css).then((c) => open(fallback, c));
+    },
+    // Knopf am LinkedIn-Beitrag: genau dieser Text
+    openText(text, css) {
+      readerCss(css).then((c) => show(text, c));
     },
     extract: mainText, // für tools/testseite.html
   };
