@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schnell lesen</title>
+<style>
+:root {
+  --bg: #f4f2ed;
+  --fg: #1d1d1f;
+  --muted: #6e6e73;
+  --panel: #ffffff;
+  --border: #e3e0d9;
+  --accent: #d6261c;
+  --btn: #f1efea;
+  --btn-hover: #e6e3dc;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1012; --fg: #f2f2f2; --muted: #9a9aa0; --panel: #1f2024;
+    --border: #2e2f35; --accent: #ff4d3d; --btn: #26272c; --btn-hover: #32333a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1012; --fg: #f2f2f2; --muted: #9a9aa0; --panel: #1f2024;
+  --border: #2e2f35; --accent: #ff4d3d; --btn: #26272c; --btn-hover: #32333a;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+main { max-width: 920px; margin: 0 auto; padding: 32px 16px 48px; }
+header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+h1 { margin: 0; font-size: 26px; letter-spacing: -0.01em; }
+h1 b { color: var(--accent); }
+.sub { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 46vh;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--fg);
+  font: inherit;
+  line-height: 1.6;
+  resize: vertical;
+}
+textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.bar .meta { margin-left: auto; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+button {
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--btn);
+  color: var(--fg);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+button:hover { background: var(--btn-hover); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+button.primary:hover { filter: brightness(1.08); }
+button:disabled { opacity: 0.5; cursor: default; }
+.link { background: none; border: 0; padding: 0; height: auto; color: var(--muted); }
+.link:hover { background: none; color: var(--fg); }
+#reader-view[hidden], #input-view[hidden] { display: none; }
+#reader-host .rsvp { border: 1px solid var(--border); }
+.note { color: var(--muted); font-size: 13px; margin-top: 18px; }
+@media (max-width: 560px) {
+  .bar .meta { margin-left: 0; width: 100%; }
+}
+/*@@RSVP_CSS@@*/
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Schnell <b>l</b>esen</h1>
+      <p class="sub">Text einfügen, Tempo wählen, lesen. Das Auge bleibt auf dem roten Buchstaben.</p>
+    </div>
+    <button class="link" id="back" hidden>← Text bearbeiten</button>
+  </header>
+
+  <section id="input-view">
+    <textarea id="text" placeholder="Text hier einfügen (⌘V) – zum Beispiel einen LinkedIn-Beitrag oder einen Artikel." spellcheck="false"></textarea>
+    <div class="bar">
+      <button class="primary" id="start" disabled>Lesen starten</button>
+      <button id="paste">Aus Zwischenablage einfügen</button>
+      <button id="clear">Leeren</button>
+      <span class="meta" id="meta"></span>
+    </div>
+    <p class="note">Tipp: ⌘↩ startet den Leser. Der Text bleibt nur in diesem Browser gespeichert.</p>
+  </section>
+
+  <section id="reader-view" hidden>
+    <div id="reader-host"></div>
+  </section>
+</main>
+
+<script>
+/*@@RSVP_JS@@*/
+</script>
+<script>
+(function () {
+  'use strict';
+  const TEXT_KEY = 'schnell-lesen:text';
+  const $ = (id) => document.getElementById(id);
+  const textEl = $('text');
+  const startBtn = $('start');
+  const meta = $('meta');
+  let reader = null;
+
+  function store(fn) { try { return fn(); } catch (e) { return null; } }
+
+  function wordCount(t) {
+    const m = t.trim().match(/\S+/g);
+    return m ? m.length : 0;
+  }
+
+  function updateMeta() {
+    const n = wordCount(textEl.value);
+    startBtn.disabled = n === 0;
+    const wpm = (store(() => JSON.parse(localStorage.getItem('schnell-lesen:settings'))) || {}).wpm || 300;
+    meta.textContent = n ? `${n} Wörter · ca. ${RSVP.formatDuration((n / wpm) * 60000)} bei ${wpm} WPM` : '';
+  }
+
+  function showInput() {
+    if (reader) { reader.destroy(); reader = null; }
+    $('reader-view').hidden = true;
+    $('input-view').hidden = false;
+    $('back').hidden = true;
+    updateMeta();
+    textEl.focus();
+  }
+
+  function showReader() {
+    const text = textEl.value;
+    if (!wordCount(text)) return;
+    store(() => localStorage.setItem(TEXT_KEY, text));
+    $('input-view').hidden = true;
+    $('reader-view').hidden = false;
+    $('back').hidden = false;
+    reader = RSVP.createReader($('reader-host'), { text, onClose: showInput, autoplay: false });
+  }
+
+  textEl.value = store(() => localStorage.getItem(TEXT_KEY)) || '';
+  textEl.addEventListener('input', () => {
+    updateMeta();
+    store(() => localStorage.setItem(TEXT_KEY, textEl.value));
+  });
+  textEl.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey)) { ev.preventDefault(); showReader(); }
+  });
+  startBtn.addEventListener('click', showReader);
+  $('back').addEventListener('click', showInput);
+  $('clear').addEventListener('click', () => {
+    textEl.value = '';
+    store(() => localStorage.removeItem(TEXT_KEY));
+    updateMeta();
+    textEl.focus();
+  });
+  $('paste').addEventListener('click', async () => {
+    try {
+      textEl.value = await navigator.clipboard.readText();
+      store(() => localStorage.setItem(TEXT_KEY, textEl.value));
+      updateMeta();
+    } catch (e) {
+      textEl.focus();
+      meta.textContent = 'Zugriff auf die Zwischenablage verweigert – bitte mit ⌘V einfügen.';
+    }
+  });
+  updateMeta();
+})();
+</script>
+</body>
+</html>

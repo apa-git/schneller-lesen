@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Testseite Erweiterung</title>
+<style>
+  body { font: 17px/1.6 Georgia, serif; margin: 0; }
+  nav, footer, aside { background: #eee; padding: 12px; font-family: sans-serif; }
+  .layout { display: flex; gap: 24px; max-width: 1000px; margin: 0 auto; padding: 24px; }
+  article { flex: 1; }
+  aside { width: 220px; }
+</style>
+</head>
+<body>
+<!-- Simuliert eine Artikelseite, um content.js ohne installierte Erweiterung zu testen.
+     Aufruf über einen lokalen Server aus dem Projektordner: /tools/testseite.html -->
+<nav>Startseite · Politik · Wirtschaft · Technik · Anmelden</nav>
+<div class="layout">
+  <article>
+    <h1>Warum Projektleiter ihre Werkzeuge selbst bauen</h1>
+    <p>Wer ein Projekt führt, kennt das Problem: Das passende Werkzeug fehlt. Früher hieß das warten, Budget beantragen und hoffen.</p>
+    <p>Heute baut man es selbst. Mit KI braucht es dafür keine Programmierkenntnisse, sondern eine klare Vorstellung davon, was das Werkzeug leisten soll.</p>
+    <ul>
+      <li>Erstens: Problem genau beschreiben.</li>
+      <li>Zweitens: kleinste brauchbare Version bauen.</li>
+    </ul>
+    <p>Das Ergebnis ist selten perfekt, aber es ist da – und es wächst mit jeder Woche.</p>
+    <button>Teilen</button>
+  </article>
+  <aside>Werbung: Jetzt Abo abschließen und 50 % sparen.</aside>
+</div>
+<footer>Impressum · Datenschutz · Kontakt</footer>
+
+<script>
+  // Platzhalter für chrome.storage, damit content.js außerhalb der Erweiterung läuft
+  window.chrome = window.chrome || {};
+  chrome.storage = { local: {
+    _d: {},
+    get(k, cb) { cb({ [k]: this._d[k] }); },
+    set(o) { Object.assign(this._d, o); },
+  } };
+</script>
+<script src="../extension/rsvp.js"></script>
+<script src="../extension/content.js"></script>
+<script>
+  window.testOpen = async (fallback = '') => {
+    const css = await (await fetch('../extension/rsvp.css')).text();
+    window.__schnellLesen.toggle(fallback, css);
+  };
+</script>
+</body>
+</html>
