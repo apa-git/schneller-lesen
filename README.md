@@ -46,7 +46,9 @@ Auf `chrome://`-Seiten, im Chrome Web Store und im PDF-Viewer darf keine Erweite
 - Ein Klick in den Fortschrittsbalken springt an diese Stelle.
 - Außerdem wählbar sind 1–3 Wörter pro Einblendung, die Schriftgröße und Hell/Dunkel.
 
-Die Einstellungen bleiben gespeichert. Für die App liegen sie im Browser, für die Erweiterung in `chrome.storage`.
+Der Leser startet nie von selbst. Er öffnet mit einem großen Knopf **▶ Start**, Leertaste startet ebenfalls.
+
+Tempo, Schriftgröße, Wörter pro Einblendung und Hell/Dunkel werden bei jeder Änderung sofort gespeichert. Neben dem Tempo erscheint dann kurz „✓ gespeichert“. Für die App liegen die Einstellungen im Browser, für die Erweiterung in `chrome.storage`. Sie bleiben auch nach einem Neustart von Chrome erhalten.
 
 ### Tempo
 

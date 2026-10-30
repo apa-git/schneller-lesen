@@ -183,6 +183,43 @@ button:disabled { opacity: 0.5; cursor: default; }
 }
 .rsvp-orp { color: var(--rsvp-accent); font-weight: 700; }
 
+/* ---------- Startknopf: sichtbar, bis zum ersten Mal gestartet wurde */
+.rsvp-start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 26px 0 20px;
+  border: 0;
+  border-radius: 28px;
+  background: var(--rsvp-accent);
+  color: #fff;
+  font: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--rsvp-accent) 35%, transparent);
+}
+.rsvp-start:hover { filter: brightness(1.08); }
+.rsvp-start:focus-visible { outline: 3px solid var(--rsvp-fg); outline-offset: 3px; }
+.rsvp-start-icon { font-size: 18px; }
+.rsvp-start small { font-size: 12px; font-weight: 500; opacity: 0.8; }
+.rsvp:not(.is-started) .rsvp-word { visibility: hidden; }
+.rsvp.is-started .rsvp-start { display: none; }
+
+/* ---------- „✓ gespeichert“ neben dem Tempo */
+.rsvp-saved {
+  font-size: 12px;
+  color: var(--rsvp-muted);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.rsvp-saved.is-visible { opacity: 1; }
+
 /* ---------- Kontext beim Pausieren */
 .rsvp-context {
   min-height: 2.8em;
@@ -576,7 +613,11 @@ button:disabled { opacity: 0.5; cursor: default; }
     const orp = el('span', 'rsvp-orp');
     const post = el('span', 'rsvp-post');
     wordBox.append(pre, orp, post);
-    stage.append(lineTop, wordBox, lineBottom);
+    // Startknopf: Der Text läuft erst los, wenn man ihn drückt
+    const startBtn = el('button', 'rsvp-start');
+    startBtn.type = 'button';
+    startBtn.append(el('span', 'rsvp-start-icon', '▶'), el('span', null, 'Start'), el('small', null, 'Leertaste'));
+    stage.append(lineTop, wordBox, lineBottom, startBtn);
 
     const context = el('div', 'rsvp-context');
 
@@ -597,6 +638,7 @@ button:disabled { opacity: 0.5; cursor: default; }
     const btnSlower = button('rsvp-slower', '−', 'Langsamer (↓)');
     const wpmLabel = el('span', 'rsvp-wpm');
     const btnFaster = button('rsvp-faster', '+', 'Schneller (↑)');
+    const savedNote = el('span', 'rsvp-saved', '✓ gespeichert');
     const wpmRange = el('input', 'rsvp-range');
     Object.assign(wpmRange, { type: 'range', min: MIN_WPM, max: MAX_WPM, step: WPM_STEP });
     wpmRange.setAttribute('aria-label', 'Wörter pro Minute');
@@ -617,7 +659,7 @@ button:disabled { opacity: 0.5; cursor: default; }
     const groupNav = el('div', 'rsvp-group');
     groupNav.append(btnBack, btnPlay, btnFwd);
     const groupSpeed = el('div', 'rsvp-group');
-    groupSpeed.append(btnSlower, wpmLabel, btnFaster);
+    groupSpeed.append(btnSlower, wpmLabel, btnFaster, savedNote);
     const groupView = el('div', 'rsvp-group');
     groupView.append(chunkSel, btnSmaller, btnBigger, btnTheme);
     if (btnClose) groupView.append(btnClose);
@@ -639,7 +681,10 @@ button:disabled { opacity: 0.5; cursor: default; }
       chunkSel.value = String(settings.wordsPerFrame);
     }
 
-    function persist() {
+    let savedTimer = null;
+
+    /** Speichert die Einstellungen; showNote zeigt kurz „✓ gespeichert“ beim Tempo. */
+    function persist(showNote) {
       storage.save({
         wpm: settings.wpm,
         wordsPerFrame: settings.wordsPerFrame,
@@ -647,6 +692,11 @@ button:disabled { opacity: 0.5; cursor: default; }
         theme: settings.theme,
         showContext: settings.showContext,
       });
+      if (showNote) {
+        savedNote.classList.add('is-visible');
+        clearTimeout(savedTimer);
+        savedTimer = setTimeout(() => savedNote.classList.remove('is-visible'), 1800);
+      }
     }
 
     function rebuild(keepTokenIndex) {
@@ -752,6 +802,7 @@ button:disabled { opacity: 0.5; cursor: default; }
     function play() {
       if (destroyed || !frames.length) return;
       if (index >= frames.length - 1) index = 0;
+      rootEl.classList.add('is-started');
       playing = true;
       rampStep = 0;
       context.hidden = true;
@@ -781,11 +832,12 @@ button:disabled { opacity: 0.5; cursor: default; }
       settings.wpm = clampWpm(settings.wpm + delta);
       applySettings();
       updateStatus();
-      persist();
+      persist(true);
     }
 
     function setText(text) {
       pause();
+      rootEl.classList.remove('is-started');
       tokens = tokenize(text);
       rebuild(false);
       render();
@@ -803,7 +855,7 @@ button:disabled { opacity: 0.5; cursor: default; }
       applySettings();
       updateStatus();
     });
-    wpmRange.addEventListener('change', persist);
+    wpmRange.addEventListener('change', () => persist(true));
     chunkSel.addEventListener('change', () => {
       settings.wordsPerFrame = +chunkSel.value;
       rebuild(true);

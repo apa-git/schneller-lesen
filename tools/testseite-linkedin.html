@@ -40,7 +40,11 @@
 
 <script>
   window.chrome = window.chrome || {};
-  chrome.storage = { local: { _d: {}, get(k, cb) { cb({ [k]: this._d[k] }); }, set(o) { Object.assign(this._d, o); } } };
+  // Platzhalter für chrome.storage, bleibt über Neuladen erhalten (wie in der Erweiterung)
+  chrome.storage = { local: {
+    get(k, cb) { cb({ [k]: JSON.parse(localStorage.getItem('stub:' + k) || 'null') || undefined }); },
+    set(o) { Object.entries(o).forEach(([k, v]) => localStorage.setItem('stub:' + k, JSON.stringify(v))); },
+  } };
   chrome.runtime = {
     sendMessage(msg, cb) {
       if (msg.type === 'css') fetch('../extension/rsvp.css').then((r) => r.text()).then(cb);

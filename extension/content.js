@@ -175,7 +175,7 @@
       text: text || 'Auf dieser Seite wurde kein lesbarer Text gefunden. Markiere den gewünschten Text und versuche es erneut.',
       storage: chromeStore,
       onClose: close,
-      autoplay: !!text,
+      autoplay: false, // erst auf Start, siehe Startknopf im Leser
       keyTarget: window,
     });
   }

@@ -267,7 +267,11 @@
     const orp = el('span', 'rsvp-orp');
     const post = el('span', 'rsvp-post');
     wordBox.append(pre, orp, post);
-    stage.append(lineTop, wordBox, lineBottom);
+    // Startknopf: Der Text läuft erst los, wenn man ihn drückt
+    const startBtn = el('button', 'rsvp-start');
+    startBtn.type = 'button';
+    startBtn.append(el('span', 'rsvp-start-icon', '▶'), el('span', null, 'Start'), el('small', null, 'Leertaste'));
+    stage.append(lineTop, wordBox, lineBottom, startBtn);
 
     const context = el('div', 'rsvp-context');
 
@@ -288,6 +292,7 @@
     const btnSlower = button('rsvp-slower', '−', 'Langsamer (↓)');
     const wpmLabel = el('span', 'rsvp-wpm');
     const btnFaster = button('rsvp-faster', '+', 'Schneller (↑)');
+    const savedNote = el('span', 'rsvp-saved', '✓ gespeichert');
     const wpmRange = el('input', 'rsvp-range');
     Object.assign(wpmRange, { type: 'range', min: MIN_WPM, max: MAX_WPM, step: WPM_STEP });
     wpmRange.setAttribute('aria-label', 'Wörter pro Minute');
@@ -308,7 +313,7 @@
     const groupNav = el('div', 'rsvp-group');
     groupNav.append(btnBack, btnPlay, btnFwd);
     const groupSpeed = el('div', 'rsvp-group');
-    groupSpeed.append(btnSlower, wpmLabel, btnFaster);
+    groupSpeed.append(btnSlower, wpmLabel, btnFaster, savedNote);
     const groupView = el('div', 'rsvp-group');
     groupView.append(chunkSel, btnSmaller, btnBigger, btnTheme);
     if (btnClose) groupView.append(btnClose);
@@ -330,7 +335,10 @@
       chunkSel.value = String(settings.wordsPerFrame);
     }
 
-    function persist() {
+    let savedTimer = null;
+
+    /** Speichert die Einstellungen; showNote zeigt kurz „✓ gespeichert“ beim Tempo. */
+    function persist(showNote) {
       storage.save({
         wpm: settings.wpm,
         wordsPerFrame: settings.wordsPerFrame,
@@ -338,6 +346,11 @@
         theme: settings.theme,
         showContext: settings.showContext,
       });
+      if (showNote) {
+        savedNote.classList.add('is-visible');
+        clearTimeout(savedTimer);
+        savedTimer = setTimeout(() => savedNote.classList.remove('is-visible'), 1800);
+      }
     }
 
     function rebuild(keepTokenIndex) {
@@ -443,6 +456,7 @@
     function play() {
       if (destroyed || !frames.length) return;
       if (index >= frames.length - 1) index = 0;
+      rootEl.classList.add('is-started');
       playing = true;
       rampStep = 0;
       context.hidden = true;
@@ -472,11 +486,12 @@
       settings.wpm = clampWpm(settings.wpm + delta);
       applySettings();
       updateStatus();
-      persist();
+      persist(true);
     }
 
     function setText(text) {
       pause();
+      rootEl.classList.remove('is-started');
       tokens = tokenize(text);
       rebuild(false);
       render();
@@ -494,7 +509,7 @@
       applySettings();
       updateStatus();
     });
-    wpmRange.addEventListener('change', persist);
+    wpmRange.addEventListener('change', () => persist(true));
     chunkSel.addEventListener('change', () => {
       settings.wordsPerFrame = +chunkSel.value;
       rebuild(true);

@@ -101,6 +101,43 @@
 }
 .rsvp-orp { color: var(--rsvp-accent); font-weight: 700; }
 
+/* ---------- Startknopf: sichtbar, bis zum ersten Mal gestartet wurde */
+.rsvp-start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 26px 0 20px;
+  border: 0;
+  border-radius: 28px;
+  background: var(--rsvp-accent);
+  color: #fff;
+  font: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--rsvp-accent) 35%, transparent);
+}
+.rsvp-start:hover { filter: brightness(1.08); }
+.rsvp-start:focus-visible { outline: 3px solid var(--rsvp-fg); outline-offset: 3px; }
+.rsvp-start-icon { font-size: 18px; }
+.rsvp-start small { font-size: 12px; font-weight: 500; opacity: 0.8; }
+.rsvp:not(.is-started) .rsvp-word { visibility: hidden; }
+.rsvp.is-started .rsvp-start { display: none; }
+
+/* ---------- „✓ gespeichert“ neben dem Tempo */
+.rsvp-saved {
+  font-size: 12px;
+  color: var(--rsvp-muted);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.rsvp-saved.is-visible { opacity: 1; }
+
 /* ---------- Kontext beim Pausieren */
 .rsvp-context {
   min-height: 2.8em;
