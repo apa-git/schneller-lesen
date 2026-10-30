@@ -1,39 +1,52 @@
 # Schnell lesen
 
-Text Wort für Wort an einer festen Stelle lesen (RSVP). Ein Buchstabe pro Wort ist rot markiert und steht immer auf derselben Achse. Kerben über und unter der Zeile zeigen auf diesen Buchstaben. Das Auge springt nicht mehr, deshalb liest du schneller.
+[![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/apa-git/schneller-lesen)](https://github.com/apa-git/schneller-lesen/releases/latest)
 
-Es gibt zwei Wege:
+**LinkedIn-Beiträge und Webtexte in einem Bruchteil der Zeit lesen.** Schnell lesen zeigt einen Text Wort für Wort an derselben Stelle. Ein Buchstabe pro Wort ist rot markiert und steht immer auf derselben Achse. Das Auge muss nicht mehr springen, deshalb liest du deutlich schneller. Das Verfahren heißt RSVP (Rapid Serial Visual Presentation).
 
-| Teil | Wofür | Ort |
-|---|---|---|
-| App | Text einfügen und lesen, offline | `app/index.html` |
-| Chrome-Erweiterung | markierten Text oder den Artikel einer Seite lesen | `extension/` |
+![Schnell lesen: das Wort „einen“ mit rotem Fixierungsbuchstaben, darunter der Satz im Zusammenhang und die Bedienleiste](docs/screenshot.png)
 
-## App
+*English summary [below](#english).*
 
-Öffne `app/index.html` per Doppelklick im Browser. Füge Text ein (⌘V) und klicke **Lesen starten**. Mit ⌘↩ startest du direkt aus dem Textfeld.
+## Funktionen
 
-## Erweiterung installieren (einmalig)
+- **Knopf an jedem LinkedIn-Beitrag.** Ein Klick auf „Schnell lesen“ unter dem Beitrag öffnet genau diesen Text, auch wenn LinkedIn ihn mit „… mehr“ kürzt.
+- **Jede Webseite.** Text markieren und per Rechtsklick lesen, oder ohne Auswahl den Hauptartikel der Seite lesen.
+- **Eigene App zum Einfügen.** Eine einzelne HTML-Datei, die offline läuft. Text einfügen und lesen.
+- **Einstellbares Tempo** von 100 bis 1000 Wörtern pro Minute. Die Einstellung bleibt gespeichert.
+- **Natürliche Pausen** an Komma, Satzende und Absatz, mehr Zeit für lange Wörter und Zahlen.
+- **Startet erst auf Knopfdruck.** Pausieren zeigt den Satz im Zusammenhang, ein Klick auf ein Wort springt dorthin.
+- **Datenschutz:** Kein Server, kein Konto, kein Tracking. Siehe [PRIVACY.md](PRIVACY.md).
 
-1. Gib in Chrome in die Adresszeile `chrome://extensions` ein und drück ↩.
-2. Schalte oben rechts den Schalter **Entwicklermodus** ein. Danach erscheint links oben eine Knopfleiste.
-3. Klicke **Entpackte Erweiterung laden**. Wähle im Dialog den Ordner `Schnells Lesen/extension` und klicke **Auswählen**. Alternativ ziehst du den Ordner `extension` aus dem Finder in das Chrome-Fenster.
-4. Die Karte „Schnell lesen 1.1.0“ erscheint. Klicke oben rechts in Chrome auf das Puzzleteil und dann auf die Stecknadel neben „Schnell lesen“. Damit liegt das Symbol dauerhaft in der Leiste.
-5. Lade offene LinkedIn-Tabs einmal neu (⌘R).
+## Installation
 
-Wenn du Dateien in `core/` geändert hast, führe `sh build.sh` aus und klicke in `chrome://extensions` bei der Erweiterung auf ↻.
+### Chrome-Erweiterung
 
-## Erweiterung benutzen
+Läuft in Chrome, Edge, Brave und Arc. Noch nicht im Chrome Web Store, deshalb wird sie einmalig von Hand geladen.
 
-- **Auswahl lesen:** Text markieren, dann Rechtsklick und **Schnell lesen**.
-- **Seite lesen:** Ohne Auswahl auf das Symbol klicken oder Alt+Shift+R drücken. Gelesen wird der Hauptartikel der Seite.
-- **LinkedIn:** Jeder Beitrag mit Text hat direkt unter dem Text einen rot umrandeten Knopf **⚡ Schnell lesen**. Ein Klick liest genau diesen Beitrag, auch wenn er mit „… mehr“ gekürzt ist. Das Symbol ohne Auswahl liest den Beitrag in Bildschirmmitte.
+1. Lade unter [Releases](https://github.com/apa-git/schneller-lesen/releases/latest) die Datei `schnell-lesen-<version>.zip` herunter und entpacke sie. Lege den entpackten Ordner an eine Stelle, an der er bleibt, zum Beispiel unter `Dokumente`. Chrome lädt die Erweiterung bei jedem Start aus diesem Ordner.
+2. Gib in Chrome `chrome://extensions` in die Adresszeile ein.
+3. Schalte oben rechts **Entwicklermodus** ein.
+4. Klick links oben auf **Entpackte Erweiterung laden** und wähle den entpackten Ordner. Darin muss direkt die Datei `manifest.json` liegen.
+5. Klick oben rechts in Chrome auf das Puzzleteil und pinne „Schnell lesen“ an.
+6. Lade offene LinkedIn-Tabs neu (⌘R bzw. Strg+R).
 
-Das Tastenkürzel änderst du unter `chrome://extensions/shortcuts`.
+**Update:** Neue ZIP herunterladen und den Inhalt des alten Ordners damit ersetzen. Klick dann in `chrome://extensions` bei „Schnell lesen“ auf ↻.
 
-Auf `chrome://`-Seiten, im Chrome Web Store und im PDF-Viewer darf keine Erweiterung laufen. Dort zeigt das Symbol kurz ein rotes „!“.
+### App ohne Installation
 
-## Bedienung im Leser
+Lade unter [Releases](https://github.com/apa-git/schneller-lesen/releases/latest) die Datei `schnell-lesen-app.html` herunter und öffne sie per Doppelklick. Füge Text ein (⌘V) und klick **Lesen starten**.
+
+## Benutzung
+
+| Wo | Was du tust |
+|---|---|
+| LinkedIn | Unter dem Beitrag auf **⚡ Schnell lesen** klicken |
+| Jede Webseite, Auswahl | Text markieren, Rechtsklick, **Schnell lesen** |
+| Jede Webseite, ganzer Artikel | Ohne Auswahl auf das Symbol klicken oder Alt+Shift+R drücken |
+
+Im Leser:
 
 | Taste | Wirkung |
 |---|---|
@@ -42,39 +55,70 @@ Auf `chrome://`-Seiten, im Chrome Web Store und im PDF-Viewer darf keine Erweite
 | ↑ / ↓ | ±25 Wörter pro Minute |
 | Esc | Schließen |
 
-- Wenn du pausierst, erscheint der aktuelle Satz. Ein Klick auf ein Wort springt dorthin.
 - Ein Klick in den Fortschrittsbalken springt an diese Stelle.
-- Außerdem wählbar sind 1–3 Wörter pro Einblendung, die Schriftgröße und Hell/Dunkel.
+- Wählbar sind außerdem 1–3 Wörter pro Einblendung, die Schriftgröße und Hell/Dunkel.
+- Das Tastenkürzel änderst du unter `chrome://extensions/shortcuts`.
 
-Der Leser startet nie von selbst. Er öffnet mit einem großen Knopf **▶ Start**, Leertaste startet ebenfalls.
+**Tipp zum Tempo:** 300 WPM ist ein guter Start. Erhöhe in 25er-Schritten, solange du den Inhalt noch wiedergeben kannst.
 
-Tempo, Schriftgröße, Wörter pro Einblendung und Hell/Dunkel werden bei jeder Änderung sofort gespeichert. Neben dem Tempo erscheint dann kurz „✓ gespeichert“. Für die App liegen die Einstellungen im Browser, für die Erweiterung in `chrome.storage`. Sie bleiben auch nach einem Neustart von Chrome erhalten.
+## Datenschutz
 
-### Tempo
-
-300 WPM ist ein guter Start. Erhöhe in 25er-Schritten, solange du den Inhalt noch wiedergeben kannst. An Satzzeichen pausiert der Leser automatisch:
-
-- Komma ×1,5
-- Satzende ×2,2
-- Absatz ×2,8
-
-Lange Wörter und Zahlen bekommen ×1,3. Wörter über 13 Zeichen werden getrennt.
-
-## Aufbau
-
-```
-core/            Lese-Kern (einzige Quelle) + Tests
-app/             index.template.html → build.sh → index.html (Kern eingebettet)
-extension/       Manifest V3, background.js, content.js, Kopie des Kerns
-tools/           Icon-Generator, Testseite für content.js
-build.sh         verteilt core/ an app/ und extension/
-```
-
-- Tests: `node --test core/rsvp.test.js`
-- Testseite für die Erweiterung ohne Installation: `python3 -m http.server 8932` im Projektordner starten, dann `http://127.0.0.1:8932/tools/testseite.html` öffnen und in der Konsole `testOpen()` aufrufen.
+Die Erweiterung sendet nichts und baut keine Netzwerkverbindung auf. Sie speichert nur deine Einstellungen lokal im Browser. Details zu jeder Berechtigung stehen in [PRIVACY.md](PRIVACY.md).
 
 ## Bekannte Grenzen
 
-- LinkedIn ändert seine Seitenstruktur regelmäßig. Die Knöpfe hängen an den Anker-Attributen in `extension/linkedin.js` (Stand Oktober 2026). Fehlen die Knöpfe plötzlich, markiere den Text und lies über das Kontextmenü. Die Anker müssen dann angepasst werden. Die Testseite dafür ist `tools/testseite-linkedin.html`.
-- Die Erweiterung läuft auf `linkedin.com` dauerhaft mit, damit die Knöpfe erscheinen. Auf allen anderen Seiten läuft sie erst nach deinem Klick.
-- Safari wird nicht unterstützt. Dafür bräuchte es einen Xcode-Wrapper.
+- **LinkedIn ändert seine Seitenstruktur regelmäßig.** Fehlen die Knöpfe plötzlich, markiere den Text und lies über das Rechtsklick-Menü. Melde es gern als [Issue](https://github.com/apa-git/schneller-lesen/issues).
+- Auf `chrome://`-Seiten, im Chrome Web Store und im PDF-Viewer darf keine Erweiterung laufen. Dort zeigt das Symbol kurz ein rotes „!“.
+- Safari und Firefox werden noch nicht unterstützt.
+- Die Oberfläche ist deutsch.
+
+## Entwicklung
+
+Keine Abhängigkeiten, kein Build-Werkzeug außer Node.js für Tests und Kopierschritt.
+
+```
+core/            Lese-Kern (einzige Quelle) und Tests
+app/             index.template.html → build.sh → index.html (Kern eingebettet)
+extension/       Manifest V3: background.js, content.js, linkedin.js, Kopie des Kerns
+tools/           Paket-Skript, Icon-Generator, Testseiten
+docs/            Bilder für diese Seite
+build.sh         verteilt core/ an app/ und extension/
+```
+
+| Aufgabe | Befehl |
+|---|---|
+| Kern an App und Erweiterung verteilen | `sh build.sh` |
+| Tests | `node --test core/rsvp.test.js` |
+| Release-ZIP bauen | `sh tools/package.sh` (legt `dist/schnell-lesen-<version>.zip` an) |
+| Erweiterung ohne Installation testen | `python3 -m http.server 8932` im Projektordner, dann `http://127.0.0.1:8932/tools/testseite.html` oder `…/testseite-linkedin.html` öffnen |
+
+Änderungen am Lese-Kern gehören nach `core/`. Die Dateien `app/index.html` und `extension/rsvp.*` werden von `build.sh` erzeugt. Die LinkedIn-Anker stehen am Anfang von `extension/linkedin.js`.
+
+Alle Änderungen pro Version stehen im [CHANGELOG](CHANGELOG.md).
+
+## Mitwirken
+
+Fehler und Ideen bitte als [Issue](https://github.com/apa-git/schneller-lesen/issues). Pull Requests sind willkommen. Bitte vorher `node --test core/rsvp.test.js` laufen lassen und `sh build.sh` ausführen.
+
+## Lizenz
+
+[MIT](LICENSE) © 2026 Andreas Paehge. Du darfst den Code nutzen, ändern und weitergeben, auch kommerziell, solange der Lizenzhinweis mit meinem Namen erhalten bleibt.
+
+## Autor
+
+**Andreas Paehge**, [@apa-git](https://github.com/apa-git)
+
+---
+
+## English
+
+**Schnell lesen** ("read fast") is a speed reader for LinkedIn and the web. It shows text one word at a time at a fixed position, with one letter highlighted in red (the optimal recognition point) so your eyes never have to move.
+
+- **Chrome extension:** adds a "Schnell lesen" button to every LinkedIn post, reads selected text via the context menu, or the main article of any page via the toolbar icon or Alt+Shift+R.
+- **Standalone app:** a single offline HTML file, paste text and read.
+- **Adjustable speed:** 100–1000 words per minute, remembered across sessions, with natural pauses at punctuation.
+- **Privacy:** no server, no account, no tracking. See [PRIVACY.md](PRIVACY.md).
+
+**Install:** Download `schnell-lesen-<version>.zip` from [Releases](https://github.com/apa-git/schneller-lesen/releases/latest) and unzip it. In Chrome, open `chrome://extensions`, enable *Developer mode*, then click *Load unpacked* and select the unzipped folder.
+
+The user interface is German. Licensed under [MIT](LICENSE) © 2026 Andreas Paehge.

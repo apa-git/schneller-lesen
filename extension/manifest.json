@@ -2,6 +2,8 @@
   "manifest_version": 3,
   "name": "Schnell lesen",
   "version": "1.3.2",
+  "author": "Andreas Paehge",
+  "homepage_url": "https://github.com/apa-git/schneller-lesen",
   "description": "Liest markierten Text, den Hauptinhalt einer Seite oder einzelne LinkedIn-Beiträge Wort für Wort mit Fixierungsbuchstaben (RSVP).",
   "permissions": ["activeTab", "scripting", "contextMenus", "storage"],
   "background": { "service_worker": "background.js" },
