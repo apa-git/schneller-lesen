@@ -82,7 +82,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 }
 /* Schnell-Lesen – Leseransicht. Alles ist unter .rsvp gekapselt. */
 .rsvp {
-  --rsvp-axis: 38; /* Achse in % der Breite */
+  --rsvp-axis: 45; /* Achse in % der Breite: ein mittellanges Wort steht so optisch mittig */
   --rsvp-font-size: 48px;
   --rsvp-bg: #fbfaf7;
   --rsvp-fg: #1d1d1f;
@@ -318,6 +318,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 }
 .rsvp-range {
   width: 100%;
+  max-width: 220px; /* nicht über die ganze Zeile ziehen */
   min-width: 0;
   margin: 0;
   accent-color: var(--rsvp-accent);
@@ -760,7 +761,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 
     function axisRatio() {
       const v = parseFloat(getComputedStyle(rootEl).getPropertyValue('--rsvp-axis'));
-      return isNaN(v) ? 0.38 : v / 100;
+      return isNaN(v) ? 0.45 : v / 100;
     }
 
     function updateStatus() {

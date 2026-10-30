@@ -1,6 +1,6 @@
 /* Schnell-Lesen – Leseransicht. Alles ist unter .rsvp gekapselt. */
 .rsvp {
-  --rsvp-axis: 38; /* Achse in % der Breite */
+  --rsvp-axis: 45; /* Achse in % der Breite: ein mittellanges Wort steht so optisch mittig */
   --rsvp-font-size: 48px;
   --rsvp-bg: #fbfaf7;
   --rsvp-fg: #1d1d1f;
@@ -236,6 +236,7 @@
 }
 .rsvp-range {
   width: 100%;
+  max-width: 220px; /* nicht über die ganze Zeile ziehen */
   min-width: 0;
   margin: 0;
   accent-color: var(--rsvp-accent);

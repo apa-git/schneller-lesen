@@ -399,7 +399,7 @@
 
     function axisRatio() {
       const v = parseFloat(getComputedStyle(rootEl).getPropertyValue('--rsvp-axis'));
-      return isNaN(v) ? 0.38 : v / 100;
+      return isNaN(v) ? 0.45 : v / 100;
     }
 
     function updateStatus() {
